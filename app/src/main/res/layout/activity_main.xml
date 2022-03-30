@@ -18,15 +18,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.147" />
 
-    <TextView
-        android:id="@+id/big_timer"
+    <Chronometer
+        android:id="@+id/timer_display"
         android:layout_width="140dp"
         android:layout_height="52dp"
         android:layout_marginStart="116dp"
         android:layout_marginTop="52dp"
-        android:text="TextView"
+        android:countDown="false"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/workout_summary" />
+
 
     <Button
         android:id="@+id/start_button"
@@ -36,7 +37,7 @@
         android:layout_marginTop="184dp"
         android:text="Start"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/big_timer" />
+        app:layout_constraintTop_toBottomOf="@+id/timer_display" />
 
     <Button
         android:id="@+id/pause_button"
@@ -46,7 +47,7 @@
         android:layout_marginTop="182dp"
         android:text="Pause"
         app:layout_constraintStart_toEndOf="@+id/start_button"
-        app:layout_constraintTop_toBottomOf="@+id/big_timer" />
+        app:layout_constraintTop_toBottomOf="@+id/timer_display" />
 
     <Button
         android:id="@+id/stop_button"
