@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.widget.Button
 import android.widget.Chronometer
+import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
@@ -22,6 +23,7 @@ class MainActivity : AppCompatActivity() {
         timer.base = SystemClock.elapsedRealtime()
 
         val workoutSummary = findViewById<TextView>(R.id.workout_summary)
+        val taskInput = findViewById<EditText>(R.id.task_name_input)
 
         startButton.setOnClickListener {
 
@@ -45,7 +47,15 @@ class MainActivity : AppCompatActivity() {
             val minutes = timeWhenStopped / 1000 / 60
             val seconds = timeWhenStopped / 1000 % 60
 
-            workoutSummary.text = "${workoutSummary.text} TIME: $minutes:$seconds "
+            var taskName:String
+
+            with (taskInput.text) {
+                taskName = when {
+                    isEmpty() -> "NO_TASK_NAME"
+                    else -> taskInput.text.toString()
+                }
+            }
+            workoutSummary.text = "You spent $minutes:$seconds on $taskName"
             timer.base = SystemClock.elapsedRealtime();
             timeWhenStopped = 0;
         }
