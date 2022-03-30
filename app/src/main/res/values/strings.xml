@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">SIT305WorkoutTimer</string>
+    <string name="summary_text">You spent X on … last time</string>
+</resources>
