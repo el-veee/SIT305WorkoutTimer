@@ -26,22 +26,33 @@ class MainActivity : AppCompatActivity() {
         val pauseButton = findViewById<Button>(R.id.pause_button)
         val stopButton = findViewById<Button>(R.id.stop_button)
         val timer = findViewById<Chronometer>(R.id.timer_display)
-
         val workoutSummary = findViewById<TextView>(R.id.workout_summary)
         val taskInput = findViewById<EditText>(R.id.task_name_input)
+
+        if (savedInstanceState != null) {
+
+            val restoredTime = savedInstanceState.getLong(timeMillisKey)
+            timer.base = SystemClock.elapsedRealtime() + timeMillis
+
+            val minutes = restoredTime / 1000 / 60
+            val seconds = restoredTime / 1000 % 60
+
+            val restoredTaskName = savedInstanceState.getString(taskNameKey)
+            workoutSummary.text = "You spent $minutes:$seconds on $restoredTaskName"
+        }
 
         timer.format = "Time Running - %s"
         timer.base = SystemClock.elapsedRealtime()
 
         startButton.setOnClickListener {
 
-            timer.base = SystemClock.elapsedRealtime() + timeMillis;
+            timer.base = SystemClock.elapsedRealtime() + timeMillis
             timer.start()
         }
 
         pauseButton.setOnClickListener {
 
-            timeMillis = timer.base - SystemClock.elapsedRealtime();
+            timeMillis = timer.base - SystemClock.elapsedRealtime()
             timer.stop()
             println("Pause button")
         }
@@ -64,7 +75,7 @@ class MainActivity : AppCompatActivity() {
 
             workoutSummary.text = "You spent $minutes:$seconds on ${taskName}"
 
-            timer.base = SystemClock.elapsedRealtime();
+            timer.base = SystemClock.elapsedRealtime()
             timeMillis = 0
         }
 
@@ -74,16 +85,19 @@ class MainActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
+        val timer = findViewById<Chronometer>(R.id.timer_display)
+        timeMillis = SystemClock.elapsedRealtime() - timer.base
+
         outState.putLong(timeMillisKey, timeMillis)
         outState.putString(taskNameKey, taskName)
 
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-
-        timeMillis = savedInstanceState.getLong("TIME_MILLIS")
-        taskName = savedInstanceState.getString("TASK_NAME")!!
-
-    }
+//    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+//        super.onRestoreInstanceState(savedInstanceState)
+//
+//        timeMillis = savedInstanceState.getLong("TIME_MILLIS")
+//        taskName = savedInstanceState.getString("TASK_NAME")!!
+//
+//    }
 }
