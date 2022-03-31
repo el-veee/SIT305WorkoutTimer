@@ -16,19 +16,19 @@ class MainActivity : AppCompatActivity() {
     private val timeMillisKey = "TIME_MILLIS"
     private val taskNameKey = "TASK_NAME"
 
-    // Views
-    val startButton = findViewById<Button>(R.id.start_button)
-    val pauseButton = findViewById<Button>(R.id.pause_button)
-    val stopButton = findViewById<Button>(R.id.stop_button)
-    val timer = findViewById<Chronometer>(R.id.timer_display)
-
-    val workoutSummary = findViewById<TextView>(R.id.workout_summary)
-    val taskInput = findViewById<EditText>(R.id.task_name_input)
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Views
+        val startButton = findViewById<Button>(R.id.start_button)
+        val pauseButton = findViewById<Button>(R.id.pause_button)
+        val stopButton = findViewById<Button>(R.id.stop_button)
+        val timer = findViewById<Chronometer>(R.id.timer_display)
+
+        val workoutSummary = findViewById<TextView>(R.id.workout_summary)
+        val taskInput = findViewById<EditText>(R.id.task_name_input)
 
         timer.format = "Time Running - %s"
         timer.base = SystemClock.elapsedRealtime()
@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             workoutSummary.text = "You spent $minutes:$seconds on ${taskName}"
+
             timer.base = SystemClock.elapsedRealtime();
             timeMillis = 0
         }
