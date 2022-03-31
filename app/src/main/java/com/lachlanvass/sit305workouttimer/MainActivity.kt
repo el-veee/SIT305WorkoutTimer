@@ -9,6 +9,13 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
+
+    private var timeMillis: Long = 0L
+    private var taskName: String = ""
+
+    private val timeMillisKey = "TIME_MILLIS"
+    private val taskNameKey = "TASK_NAME"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -17,7 +24,6 @@ class MainActivity : AppCompatActivity() {
         val pauseButton = findViewById<Button>(R.id.pause_button)
         val stopButton = findViewById<Button>(R.id.stop_button)
 
-        var timeWhenStopped: Long = 0
         val timer = findViewById<Chronometer>(R.id.timer_display)
         timer.format = "Time Running - %s"
         timer.base = SystemClock.elapsedRealtime()
@@ -27,13 +33,13 @@ class MainActivity : AppCompatActivity() {
 
         startButton.setOnClickListener {
 
-            timer.base = SystemClock.elapsedRealtime() + timeWhenStopped;
+            timer.base = SystemClock.elapsedRealtime() + timeMillis;
             timer.start()
         }
 
         pauseButton.setOnClickListener {
 
-            timeWhenStopped = timer.base - SystemClock.elapsedRealtime();
+            timeMillis = timer.base - SystemClock.elapsedRealtime();
             timer.stop()
             println("Pause button")
         }
@@ -42,12 +48,10 @@ class MainActivity : AppCompatActivity() {
 
             timer.stop()
 
-            timeWhenStopped = SystemClock.elapsedRealtime() - timer.base
+            timeMillis = SystemClock.elapsedRealtime() - timer.base
 
-            val minutes = timeWhenStopped / 1000 / 60
-            val seconds = timeWhenStopped / 1000 % 60
-
-            var taskName:String
+            val minutes = timeMillis / 1000 / 60
+            val seconds = timeMillis / 1000 % 60
 
             with (taskInput.text) {
                 taskName = when {
@@ -55,11 +59,30 @@ class MainActivity : AppCompatActivity() {
                     else -> taskInput.text.toString()
                 }
             }
-            workoutSummary.text = "You spent $minutes:$seconds on $taskName"
+
+            workoutSummary.text = "You spent $minutes:$seconds on ${taskName}"
             timer.base = SystemClock.elapsedRealtime();
-            timeWhenStopped = 0;
+            timeMillis = 0
         }
 
+
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+
+        outState.putLong(timeMillisKey, timeMillis)
+        outState.putString(taskNameKey, taskName)
+
+        super.onSaveInstanceState(outState)
+
+
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+
+        timeMillis = savedInstanceState.getLong("TIME_MILLIS")
+        taskName = savedInstanceState.getString("TASK_NAME")!!
 
     }
 }
