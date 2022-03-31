@@ -32,7 +32,6 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState != null) {
 
             val restoredTime = savedInstanceState.getLong(timeMillisKey)
-            timer.base = SystemClock.elapsedRealtime() + timeMillis
 
             val minutes = restoredTime / 1000 / 60
             val seconds = restoredTime / 1000 % 60
@@ -93,11 +92,13 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-//    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-//        super.onRestoreInstanceState(savedInstanceState)
-//
-//        timeMillis = savedInstanceState.getLong("TIME_MILLIS")
-//        taskName = savedInstanceState.getString("TASK_NAME")!!
-//
-//    }
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+
+        val timer = findViewById<Chronometer>(R.id.timer_display)
+        val restoredTime = savedInstanceState.getLong(timeMillisKey)
+        timer.base = SystemClock.elapsedRealtime() - restoredTime
+        timer.start()
+
+    }
 }
