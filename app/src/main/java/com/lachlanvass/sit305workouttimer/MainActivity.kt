@@ -1,5 +1,6 @@
 package com.lachlanvass.sit305workouttimer
 
+import android.content.Context
 import android.os.Bundle
 import android.os.SystemClock
 import android.widget.Button
@@ -15,7 +16,8 @@ class MainActivity : AppCompatActivity() {
 
     private val timeMillisKey = "TIME_MILLIS"
     private val taskNameKey = "TASK_NAME"
-
+    private val sharedPrefsTaskNameKey = "PREFS_TASK_NAME"
+    private val sharedPrefsTimeKey = "PREFS_TIME"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,20 +31,25 @@ class MainActivity : AppCompatActivity() {
         val workoutSummary = findViewById<TextView>(R.id.workout_summary)
         val taskInput = findViewById<EditText>(R.id.task_name_input)
 
-        if (savedInstanceState != null) {
-
-            val restoredTime = savedInstanceState.getLong(timeMillisKey)
-
-            val minutes = restoredTime / 1000 / 60
-            val seconds = restoredTime / 1000 % 60
-
-            val restoredTaskName = savedInstanceState.getString(taskNameKey)
-            workoutSummary.text = "You spent $minutes:$seconds on $restoredTaskName"
-        }
-
         timer.format = "Time Running - %s"
         timer.base = SystemClock.elapsedRealtime()
 
+        // shared prefs
+
+        val sharedPrefs = this.getPreferences(Context.MODE_PRIVATE)
+
+        // If task name in shared prefs, retrieve and display value
+
+        val storedTaskName = sharedPrefs.getString(sharedPrefsTaskNameKey, null)
+        val storedTime = sharedPrefs.getLong(sharedPrefsTimeKey, 0)
+        if (storedTaskName != null && storedTime != null) {
+
+            workoutSummary.text = "FROM SHARED PREFS: $storedTaskName"
+
+            "You spent $minutes:$seconds on ${taskName}"
+        }
+
+        // Listenerrs
         startButton.setOnClickListener {
 
             timer.base = SystemClock.elapsedRealtime() + timeMillis
@@ -76,6 +83,14 @@ class MainActivity : AppCompatActivity() {
 
             timer.base = SystemClock.elapsedRealtime()
             timeMillis = 0
+
+            // Save task name to shared prefs
+
+            with (sharedPrefs.edit()) {
+                putString(sharedPrefsTaskNameKey, taskInput.text.toString())
+                putLong(sharedPrefsTimeKey, SystemClock.elapsedRealtime() - timer.base)
+                apply()
+            }
         }
 
 
