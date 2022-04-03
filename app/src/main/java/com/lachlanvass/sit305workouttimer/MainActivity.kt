@@ -41,15 +41,17 @@ class MainActivity : AppCompatActivity() {
         // If task name in shared prefs, retrieve and display value
 
         val storedTaskName = sharedPrefs.getString(sharedPrefsTaskNameKey, null)
-        val storedTime = sharedPrefs.getLong(sharedPrefsTimeKey, 0)
-        if (storedTaskName != null && storedTime != null) {
+        val storedTime = sharedPrefs.getLong(sharedPrefsTimeKey, -1 )
 
-            workoutSummary.text = "FROM SHARED PREFS: $storedTaskName"
+        if (storedTaskName != null && storedTime != -1L) {
 
-            "You spent $minutes:$seconds on ${taskName}"
+            val minutes = storedTime / 1000 / 60
+            val seconds = storedTime / 1000 % 60
+
+            workoutSummary.text = "You spent $minutes:$seconds on ${storedTaskName}"
         }
 
-        // Listenerrs
+        // Listeners
         startButton.setOnClickListener {
 
             timer.base = SystemClock.elapsedRealtime() + timeMillis
@@ -81,16 +83,18 @@ class MainActivity : AppCompatActivity() {
 
             workoutSummary.text = "You spent $minutes:$seconds on ${taskName}"
 
+            // Save task name to shared prefs
+            with (sharedPrefs.edit()) {
+                putString(sharedPrefsTaskNameKey, taskInput.text.toString())
+                putLong(sharedPrefsTimeKey, timeMillis)
+                apply()
+            }
+
             timer.base = SystemClock.elapsedRealtime()
             timeMillis = 0
 
-            // Save task name to shared prefs
 
-            with (sharedPrefs.edit()) {
-                putString(sharedPrefsTaskNameKey, taskInput.text.toString())
-                putLong(sharedPrefsTimeKey, SystemClock.elapsedRealtime() - timer.base)
-                apply()
-            }
+
         }
 
 
